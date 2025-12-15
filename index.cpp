@@ -5,9 +5,18 @@
 using json = nlohmann::json;
 using namespace std;
 
+double ascii(string, string);
+
 int main()
 {
-    ifstream file("vocab.json");
+    cout << ascii("c" ,"vocab.json");
+    return 0;
+}
+
+double ascii(string key, string path)
+{
+    double value;
+    ifstream file(path);
     if (!file.is_open())
     {
         cerr << "Failed to open vocab.json\n";
@@ -23,15 +32,11 @@ int main()
         cerr << "JSON parse error: " << e.what() << "\n";
         return 1;
     }
-    string c;
-    cout << "Enter :- ";
-    getline(cin, c);
-    for (int i = 0; i < c.size(); ++i)
+    if (data.contains(key))
     {
-        string key(1, c[i]);
-        if (data.contains(key)) cout << key << " = " << data[key].dump(4) << endl;
-        else cout << key << " Not found in this file " << endl;
+        value = data.at(key).get<double>();
     }
+    else cout << key << " Not found in this file " << endl;
     file.close();
-    return 0;
+    return value;
 }
