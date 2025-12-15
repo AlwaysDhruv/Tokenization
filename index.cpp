@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -12,13 +13,14 @@ int main()
     string text;
     cout << "Enter :- " ;
     getline(cin, text);
+    vector<double> value;
     for (int i = 0; i < text.size(); ++i)
     {
         string key(1, text[i]);
-        double value = ascii(key ,"vocab.json");
-        if (value==1) break;
-        else cout << key << " = " << value << endl;
+        value.push_back(ascii(key ,"vocabb.json"));
+        if (value.back()==1.1) break;
     }
+    cout << value.size();
     return 0;
 }
 
@@ -28,8 +30,8 @@ double ascii(string key, string path)
     ifstream file(path);
     if (!file.is_open())
     {
-        cerr << "Failed to open vocab.json\n";
-        return 1;
+        cerr << "Failed to open " << path << endl;
+        return 1.1;
     }
     else
     {
@@ -41,7 +43,7 @@ double ascii(string key, string path)
         catch (const json::parse_error& e)
         {
             cerr << "JSON parse error: " << e.what() << "\n";
-            return 1;
+            return 1.1;
         }
         if (data.contains(key)) value = data.at(key).get<double>();
         else cout << key << " Not found in this file " << endl;
