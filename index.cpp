@@ -17,13 +17,13 @@ int main()
     for (int i = 0; i < text.size(); ++i)
     {
         string key(1, text[i]);
-        value.push_back(ascii(key ,"vocabb.json"));
+        value.push_back(ascii(key ,"vocab.json"));
         if (value.back()==1.1) break;
     }
     cout << value.size();
-    """
+    /*
         Merging Logic Comming Soon.....
-    """
+    */
     return 0;
 }
 
