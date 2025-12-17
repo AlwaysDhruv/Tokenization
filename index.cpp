@@ -9,6 +9,7 @@ using json = nlohmann::json;
 
 void fetch_json_data(unordered_map<char, double>&, string);
 int fetch_text_data_to_tokens(unordered_map<char, double>&, vector<double>&, string);
+int tokens_to_pairs(vector<double>&,vector<vector<double>>&);
 
 int main()
 {
@@ -16,8 +17,11 @@ int main()
     fetch_json_data(vocab, "vocab.json");
     
     vector<double> tokens;
-    cout << fetch_text_data_to_tokens(vocab, tokens, "test.txt");
-    
+    fetch_text_data_to_tokens(vocab, tokens, "test.txt");
+
+    vector<vector<double>> pairs;
+    tokens_to_pairs(tokens, pairs);
+
     return 0;
 }
 
@@ -48,4 +52,26 @@ int fetch_text_data_to_tokens(unordered_map<char, double>& vcb, vector<double>& 
         }
     }
     return tk.size();
+}
+
+int tokens_to_pairs(vector<double>& tokens ,vector<vector<double>>& pairs)
+{
+    int ct = 0;
+    vector<double> pair;
+    for (int i = 0; i < tokens.size(); ++i)
+    {
+        if (ct==2)
+        {
+            pairs.push_back(pair);
+            pair.clear();
+            ct = 0;
+            i-=2;
+        }
+        else
+        {
+            pair.push_back(tokens[i]);
+            ++ct;
+        }
+    }
+    return pairs.size();
 }
