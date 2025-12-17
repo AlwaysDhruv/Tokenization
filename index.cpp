@@ -9,10 +9,8 @@ using namespace std;
 using json = nlohmann::json;
 
 void fetch_json_data(unordered_map<char, double>&, string);
-int fetch_text_data_to_tokens(unordered_map<char, double>&, vector<double>&, string);
 int tokens_to_pairs(vector<double>&,vector<vector<double>>&);
-void display(vector<vector<double>>&);
-void sort(vector<vector<double>>&, int);
+int fetch_text_data_to_tokens(unordered_map<char, double>&, vector<double>&, string);
 
 int main()
 {
@@ -24,10 +22,8 @@ int main()
 
     vector<vector<double>> pairs;
     tokens_to_pairs(tokens, pairs);
-    
-    sort(pairs,0);
-    display(pairs);
-    
+
+    cout << pairs.size() << " "  << pairs[0].size() << endl;
     return 0;
 }
 
@@ -84,32 +80,4 @@ int tokens_to_pairs(vector<double>& tokens ,vector<vector<double>>& pairs)
         }
     }
     return pairs.size();
-}
-
-void display(vector<vector<double>>& pairs)
-{
-    for (auto& pair : pairs)
-    {
-        for (auto& value : pair) cout << value << " "; 
-        cout << endl;
-    }
-}
-
-void sort(vector<vector<double>>& pairs, int srt)
-{
-    if (srt==0)
-    {
-        for (int j = 0; j < pairs.size(); ++j)
-        for (int i = 0; i < pairs.size() - 1; ++i)
-            if (pairs[i][0] > pairs[i + 1][0])
-                swap(pairs[i], pairs[i + 1]);            
-    }
-    else if(srt==1)
-    {
-        for (int j = 0; j < pairs.size(); ++j)
-        for (int i = 0; i < pairs.size() - 1; ++i)
-            if (pairs[i][0] < pairs[i + 1][0])
-                swap(pairs[i], pairs[i + 1]);
-    }
-    else cout << "[" << srt << "]" << " Is not matching to 0(Ascending) or 1(Descending)." << endl;
 }
