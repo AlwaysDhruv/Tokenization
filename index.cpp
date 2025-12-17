@@ -13,7 +13,6 @@ int main()
 {
     unordered_map<char, double> vocab;
     fetch_json_data(vocab, "vocab.json");
-    
     return 0;
 }
 
