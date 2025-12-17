@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
 #include "json.hpp"
 
 using namespace std;
@@ -10,6 +11,8 @@ using json = nlohmann::json;
 void fetch_json_data(unordered_map<char, double>&, string);
 int fetch_text_data_to_tokens(unordered_map<char, double>&, vector<double>&, string);
 int tokens_to_pairs(vector<double>&,vector<vector<double>>&);
+void display(vector<vector<double>>&);
+void sort(vector<vector<double>>&, int);
 
 int main()
 {
@@ -21,27 +24,27 @@ int main()
 
     vector<vector<double>> pairs;
     tokens_to_pairs(tokens, pairs);
-
-    for (auto j = 0; j < pairs.size(); ++j)
-    {
-        if (pairs[j][0] < pairs[j + 1][0])
-        {
-            
-        }
-    }
+    
+    sort(pairs,0);
+    display(pairs);
+    
     return 0;
 }
 
 void fetch_json_data(unordered_map<char, double>& vcb, string path)
 {
     ifstream file(path);
-    json data;
-    file >> data;
-    file.close();
-    for(auto& [key, values] : data.items())
+    if (!file.is_open()) cout << path << " Can Not Open " << endl;
+    else
     {
-        if (key.size() == 1)
-            vcb[key[0]] = values.get<double>();
+        json data;
+        file >> data;
+        file.close();
+        for(auto& [key, values] : data.items())
+        {
+            if (key.size() == 1)
+                vcb[key[0]] = values.get<double>();
+        }
     }
 }
 
@@ -81,4 +84,32 @@ int tokens_to_pairs(vector<double>& tokens ,vector<vector<double>>& pairs)
         }
     }
     return pairs.size();
+}
+
+void display(vector<vector<double>>& pairs)
+{
+    for (auto& pair : pairs)
+    {
+        for (auto& value : pair) cout << value << " "; 
+        cout << endl;
+    }
+}
+
+void sort(vector<vector<double>>& pairs, int srt)
+{
+    if (srt==0)
+    {
+        for (int j = 0; j < pairs.size(); ++j)
+        for (int i = 0; i < pairs.size() - 1; ++i)
+            if (pairs[i][0] > pairs[i + 1][0])
+                swap(pairs[i], pairs[i + 1]);            
+    }
+    else if(srt==1)
+    {
+        for (int j = 0; j < pairs.size(); ++j)
+        for (int i = 0; i < pairs.size() - 1; ++i)
+            if (pairs[i][0] < pairs[i + 1][0])
+                swap(pairs[i], pairs[i + 1]);
+    }
+    else cout << "[" << srt << "]" << " Is not matching to 0(Ascending) or 1(Descending)." << endl;
 }
