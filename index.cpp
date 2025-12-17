@@ -22,6 +22,13 @@ int main()
     vector<vector<double>> pairs;
     tokens_to_pairs(tokens, pairs);
 
+    for (auto j = 0; j < pairs.size(); ++j)
+    {
+        if (pairs[j][0] < pairs[j + 1][0])
+        {
+            
+        }
+    }
     return 0;
 }
 
