@@ -22,13 +22,19 @@ struct Frequency
 int main()
 {
     unordered_map<char, double> vocab;
-    fetch_json_data(vocab, "vocab.json");
+    fetch_json_data(vocab, "char_to_tokens.json");
     
+    cout << "Data Fetched From Json " << endl;
+
     vector<double> tokens;
     fetch_text_data_to_tokens(vocab, tokens, "test.txt");
 
+    cout << "Data Converts Into Tokens " << endl;
+
     vector<vector<double>> pairs;
     tokens_to_pairs(tokens, pairs);
+
+    cout << "Tokens Converts Into Pairs " << endl;
 
     bool isthat[pairs.size()] = {false};
 
@@ -49,11 +55,15 @@ int main()
         fre.push_back({pairs[i][0], pairs[i][1], double(ct)});
     }
 
+    cout << "Pairs Frequency Calculated" << endl;
+
     for (size_t i = 0; i < fre.size() - 1; ++i)
         for (size_t j = 0; j < fre.size() - i - 1; ++j)
             if (fre[j].ct < fre[j + 1].ct) swap(fre[j], fre[j + 1]);
+    
+    cout << "Most Frequent Pair" << endl;
 
-    for (size_t i = 0; i < fre.size(); ++i) cout << fre[i].token1 << " " << fre[i].token2 << " " << fre[i].ct << endl;
+    cout << fre[0].token1 << " " << fre[0].token2 << " " << fre[0].ct;
     return 0;
 }
 
