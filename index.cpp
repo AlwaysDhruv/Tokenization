@@ -29,7 +29,7 @@ int main()
     cout << endl << endl; */
 
     bool isthat[pairs.size()] = {false};
-
+    vector<double> frequecy;
     for (int i = 0; i < pairs.size(); ++i)
     {
         if (isthat[i]) continue;
@@ -42,7 +42,12 @@ int main()
                 ++ct;
             }
         }
-        cout << pairs[i][0] << " : " << pairs[i][1] << " => " << ct << endl;
+        frequecy.push_back(ct);
+    }
+
+    for (auto& fre : frequecy)
+    {
+        cout << fre << " ";
     }
     return 0;
 }
