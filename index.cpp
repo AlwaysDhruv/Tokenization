@@ -25,18 +25,24 @@ int main()
     vector<vector<double>> pairs;
     tokens_to_pairs(tokens, pairs);
 
-    sort(pairs.begin(), pairs.end());
+/*    display(pairs);
+    cout << endl << endl; */
+
+    bool isthat[pairs.size()] = {false};
 
     for (int i = 0; i < pairs.size(); ++i)
     {
-        for (int j = i; j < pairs.size(); ++j)
+        if (isthat[i]) continue;
+        int ct = 1;
+        for (int j = i + 1; j < pairs.size(); ++j)
         {
             if (pairs[i][0]==pairs[j][0] && pairs[i][1]==pairs[j][1])
             {
-                cout  << i << " " << pairs[i][0] << " " << pairs[i][1] << " : " << pairs[j][0] << " " << pairs[j][1] << endl;
-                break;
+                isthat[j] = true;
+                ++ct;
             }
         }
+        cout << pairs[i][0] << " : " << pairs[i][1] << " => " << ct << endl;
     }
     return 0;
 }
