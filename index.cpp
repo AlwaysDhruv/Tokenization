@@ -13,6 +13,7 @@ int tokens_to_pairs(vector<double>&,vector<vector<double>>&);
 int fetch_text_data_to_tokens(unordered_map<char, double>&, vector<double>&, string);
 template <typename vectr> void display(vector<vector<vectr>>&);
 template <typename vectrr> void displayy(vector<vector<vectrr>>&);
+char token_to_char(unordered_map<char, double>&, double);
 
 struct Frequency
 {
@@ -63,10 +64,9 @@ int main()
     
     cout << "Most Frequent Pair" << endl;
 
-    cout << fre[0].token1 << " " << fre[0].token2 << " " << fre[0].ct;
-
-"Merging logic"
-
+    cout << token_to_char(vocab, fre[0].token1);
+    cout << endl;
+    cout << token_to_char(vocab, fre[0].token2);
     return 0;
 }
 
@@ -146,4 +146,18 @@ template <typename vectrr> void displayy(vector<vector<vectrr>>& vec)
         }
         cout << endl;
     }
+}
+
+char token_to_char(unordered_map<char, double>& vcb, double tk)
+{
+    char ch;
+    for (const auto& pair : vcb)
+    {
+        if (pair.second==tk)
+        {
+            ch = pair.first;
+            break;
+        }
+    }
+    return ch;
 }
