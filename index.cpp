@@ -74,25 +74,7 @@ int main()
     }
 
     display(pairs);
-    cout << endl << endl;
-
-    for (int i = 0; i < pairs.size(); ++i)
-    {
-        if (pairs[i][0]==(fre[0].token1 * 100) + fre[0].token2)
-        {
-            int ct = i;
-            ++ct;
-            while(pairs[ct][0]!=(fre[0].token1 * 100) + fre[0].token2)
-            {
-                pairs[--ct].push_back(pairs.erase(pairs.begin() + ct));
-                ++ct;
-            }
-            cout << endl << endl;
-            cout << i << endl;
-            i+=(ct - 1);
-        }
-    }
-    display(pairs);
+    
     return 0;
 }
 
