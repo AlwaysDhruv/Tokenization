@@ -17,13 +17,13 @@ char token_to_char(unordered_map<char, double>&, double);
 
 struct Frequency
 {
-    double token1, token2, ct;
+    double token1, token2, merge, ct;
 };
 
 int main()
 {
     unordered_map<char, double> vocab;
-    fetch_json_data(vocab, "char_to_tokens.json");
+    fetch_json_data(vocab, "vocab.json");
     
     cout << "Data Fetched From Json " << endl;
 
@@ -61,7 +61,6 @@ int main()
     for (size_t i = 0; i < fre.size() - 1; ++i)
         for (size_t j = 0; j < fre.size() - i - 1; ++j)
             if (fre[j].ct < fre[j + 1].ct) swap(fre[j], fre[j + 1]);
-    
 
     for (size_t i = 0; i < pairs.size(); ++i)
     {
@@ -70,11 +69,30 @@ int main()
             erase(pairs[i], fre[0].token1);
             erase(pairs[i], fre[0].token2);
             pairs[i].insert(pairs[i].begin(), (fre[0].token1 * 100) + fre[0].token2);
+            if (i==0)
+            {
+                erase(pairs[i], (fre[0].token1 * 100) + fre[0].token2);
+                erase(pairs[i + 1], fre[0].token2);
+                pairs[i + 1].insert(pairs[i + 1].begin(), (fre[0].token1 * 100) + fre[0].token2);
+            }
+            else if(i == (pairs.size() - 1))
+            {
+                erase(pairs[i], (fre[0].token1 * 100) + fre[0].token2);
+                erase(pairs[i - 1], fre[0].token1);
+                pairs[i - 1].insert(pairs[i - 1].begin(), (fre[0].token1 * 100) + fre[0].token2);                
+            }
+            else
+            {
+                erase(pairs[i], (fre[0].token1 * 100) + fre[0].token2);
+                erase(pairs[i - 1], fre[0].token1);
+                erase(pairs[i + 1], fre[0].token2);
+                pairs[i - 1].insert(pairs[i - 1].end(), (fre[0].token1 * 100) + fre[0].token2);
+                pairs[i + 1].insert(pairs[i + 1].begin(), (fre[0].token1 * 100) + fre[0].token2);
+            }
         }
     }
 
     display(pairs);
-    
     return 0;
 }
 
