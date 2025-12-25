@@ -8,11 +8,11 @@
 using namespace std;
 using json = nlohmann::json;
 using ordered_json = nlohmann::ordered_json;
-
 char token_to_char(unordered_map<char, long long>&, double);
 int tokens_to_pairs(vector<double>&,vector<vector<double>>&);
 void fetch_json_data(unordered_map<char, long long>&, string);
 template <typename vectr> void display(vector<vector<vectr>>&);
+template <typename empty> void remove_empty(vector<vector<empty>>&);
 int fetch_text_data_to_tokens(unordered_map<char, long long>&, vector<double>&, string);
 void pairs_to_most_frequent_merge(vector<vector<double>>&, unordered_map<char, long long>&);
 
@@ -102,6 +102,11 @@ template <typename vectr> void display(vector<vector<vectr>>& vec)
         for (auto& value : values) cout << value << " ";
         cout << endl;
     }
+}
+
+template <typename empty> void remove_empty(vector<vector<empty>>& vectr)
+{
+    for (size_t i = 0; i < vectr.size(); ++i) if (vectr[i].empty()) vectr.erase(vectr.begin() + i);
 }
 
 char token_to_char(unordered_map<char, long long>& vcb, double tk)
@@ -194,7 +199,7 @@ void pairs_to_most_frequent_merge(vector<vector<double>>& pairs, unordered_map<c
         }
     }
     
-    for (int i = 0; i < pairs.size(); ++i) if (pairs[i].empty()) pairs.erase(pairs.begin() + i);
+    remove_empty(pairs);
 
     ofstream merges_file("merges.txt", std::ios::app);
     
