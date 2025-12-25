@@ -43,7 +43,6 @@ int main()
 
 void fetch_json_data(unordered_map<unsigned char, long long>& vcb)
 {
-    ifstream file("vocab.json");
     if (!fs::exists("vocab.json"))
     {
         ordered_json vocab = ordered_json::object();
@@ -62,6 +61,7 @@ void fetch_json_data(unordered_map<unsigned char, long long>& vcb)
 
         cout << "vocab.json Created Sucessfully..." << endl;
 
+        ifstream file("vocab.json");
         json data;
         file >> data;
 
@@ -78,6 +78,7 @@ void fetch_json_data(unordered_map<unsigned char, long long>& vcb)
     }
     else
     {
+        ifstream file("vocab.json");
         json data;
         file >> data;
         file.close();
@@ -237,15 +238,6 @@ void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_ma
     
     remove_empty(pairs);
 
-    ofstream merges_file("merges.txt", std::ios::app);
-    
-    if(!merges_file.is_open()) cout << "Can not open or create merges.txt " << endl;
-    else
-    {        
-        merges_file << tk1 << " " << tk2 << endl;            
-        merges_file.close();
-    }
-
     ifstream vocab("vocab.json");
     if (!vocab.is_open()) cout << "vocab.json Can Not Open " << endl;
     else
@@ -259,11 +251,20 @@ void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_ma
             long long max_id = -1;
             for (auto& [k, v] : data.items()) max_id = std::max(max_id, v.get<long long>());
             data[tk] = max_id + 1;
+
+            std::ofstream out("vocab.json");
+            out << data.dump(4);
+            out.close();
+
+            ofstream merges_file("merges.txt", std::ios::app);
+    
+            if(!merges_file.is_open()) cout << "Can not open or create merges.txt " << endl;
+            else
+            {        
+                merges_file << tk1 << " " << tk2 << endl;            
+                merges_file.close();
+            }    
         }
-        
-        std::ofstream out("vocab.json");
-        out << data.dump(4);
-        out.close();
     }
 }
 
