@@ -11,6 +11,8 @@ using json = nlohmann::json;
 namespace fs = std::filesystem;
 using ordered_json = nlohmann::ordered_json;
 
+static unordered_map<long long, string> most;
+
 string byte_to_key(unsigned char);
 char token_to_char(unordered_map<unsigned char, long long>&, long long);
 int tokens_to_pairs(vector<long long>&,vector<vector<long long>>&);
@@ -165,12 +167,27 @@ int tokens_to_pairs(vector<long long>& tokens ,vector<vector<long long>>& pairs)
 char token_to_char(unordered_map<unsigned char, long long>& vcb, long long tk)
 {
     char ch;
+    bool test = false;
     for (const auto& pair : vcb)
     {
         if (pair.second==tk)
         {
             ch = pair.first;
+            test = true;
             break;
+        }
+    }
+    if (test==false)
+    {
+        for (const auto& pair : most)
+        {
+            if (pair.first==tk)
+            {
+                cout << pair.first << " " << pair.second << endl;
+                ch = pair.second;
+                test = true;
+                break;
+            }
         }
     }
     return ch;
@@ -178,106 +195,118 @@ char token_to_char(unordered_map<unsigned char, long long>& vcb, long long tk)
 
 void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_map<unsigned char, long long>& vcb)
 {
-    bool isthat[pairs.size()] = {false};
-    
-    vector<Frequency> fre;    
-
-    for (size_t i = 0; i < pairs.size(); ++i)
+    for (int i = 0; i < 3; ++i)
     {
-        if (isthat[i]) continue;
-        long long ct = 1;
-        for (size_t j = i + 1; j < pairs.size(); ++j)
+        display(pairs);
+        cout << endl << endl;
+
+        if (pairs.size()!=1)
         {
-            if (pairs[i][0]==pairs[j][0] && pairs[i][1]==pairs[j][1])
-            {
-                isthat[j] = true;
-                ++ct;
-            }
-        }
-        fre.push_back({pairs[i][0], pairs[i][1], ct});
-    }
-
-    for (size_t i = 0; i < fre.size() - 1; ++i)
-        for (size_t j = 0; j < fre.size() - i - 1; ++j)
-            if (fre[j].ct < fre[j + 1].ct) swap(fre[j], fre[j + 1]);
-
-    long long mul = 1;
-    long long num = fre[0].token2;
-    
-    while(num > 0)
-    {
-        num /= 10;
-        mul *= 10;
-    }
-    
-    fre[0].merge = (fre[0].token1 * mul) + fre[0].token2;
-    
-    string tk;
-    char tk1 = token_to_char(vcb, fre[0].token1);
-    char tk2 = token_to_char(vcb, fre[0].token2);
-    tk.push_back(tk1);
-    tk.push_back(tk2);        
-
-    cout << "Most Frequent : "<< tk1 << " & " << tk2 << " => "<< tk << endl << endl; 
-
-    for (size_t i = 0; i < pairs.size(); ++i)
-    {
-        if (pairs[i][0]==fre[0].token1 && pairs[i][1]==fre[0].token2)
-        {
-            erase(pairs[i], fre[0].token1);
-            erase(pairs[i], fre[0].token2);
-            pairs[i].insert(pairs[i].begin(), fre[0].merge);
-            if (i==0)
-            {
-                erase(pairs[i], fre[0].merge);
-                erase(pairs[i + 1], fre[0].token2);
-                pairs[i + 1].insert(pairs[i + 1].begin(), fre[0].merge);
-            }
-            else if(i == (pairs.size() - 1))
-            {
-                erase(pairs[i], fre[0].merge);
-                erase(pairs[i - 1], fre[0].token1);
-                pairs[i - 1].insert(pairs[i - 1].begin(), fre[0].merge);                
-            }
-            else
-            {
-                erase(pairs[i], fre[0].merge);
-                erase(pairs[i - 1], fre[0].token1);
-                erase(pairs[i + 1], fre[0].token2);
-                pairs[i - 1].insert(pairs[i - 1].end(), fre[0].merge);
-                pairs[i + 1].insert(pairs[i + 1].begin(), fre[0].merge);
-            }
-        }
-    }
-    
-    remove_empty(pairs);
-
-    ifstream vocab("vocab.json");
-    if (!vocab.is_open()) cout << "vocab.json Can Not Open " << endl;
-    else
-    {   
-        ordered_json data;
-        vocab >> data;
-        vocab.close();
+            bool isthat[pairs.size()] = {false};
+            
+            vector<Frequency> fre;    
         
-        if (!data.contains(tk))
-        {
-            long long max_id = -1;
-            for (auto& [k, v] : data.items()) max_id = std::max(max_id, v.get<long long>());
-            data[tk] = max_id + 1;
+            for (size_t i = 0; i < pairs.size(); ++i)
+            {
+                if (isthat[i]) continue;
+                long long ct = 1;
+                for (size_t j = i + 1; j < pairs.size(); ++j)
+                {
+                    if (pairs[i][0]==pairs[j][0] && pairs[i][1]==pairs[j][1])
+                    {
+                        isthat[j] = true;
+                        ++ct;
+                    }
+                }
+                fre.push_back({pairs[i][0], pairs[i][1], ct});
+            }
+        
+            for (size_t i = 0; i < fre.size() - 1; ++i)
+                for (size_t j = 0; j < fre.size() - i - 1; ++j)
+                    if (fre[j].ct < fre[j + 1].ct) swap(fre[j], fre[j + 1]);
+        
+            long long mul = 1;
+            long long num = fre[0].token2;
+            
+            while(num > 0)
+            {
+                num /= 10;
+                mul *= 10;
+            }
+            
+            fre[0].merge = (fre[0].token1 * mul) + fre[0].token2;
+            cout << fre[0].token1 << " " << fre[0].token2 << endl;
 
-            std::ofstream out("vocab.json");
-            out << data.dump(4);
-            out.close();
-
-            ofstream merges_file("merges.txt", std::ios::app);
-    
-            if(!merges_file.is_open()) cout << "Can not open or create merges.txt " << endl;
+            string tk;
+            char tk1 = token_to_char(vcb, fre[0].token1);
+            char tk2 = token_to_char(vcb, fre[0].token2);
+            tk.push_back(tk1);
+            tk.push_back(tk2);        
+        
+            cout << "Most Frequent : "<< tk1 << " & " << tk2 << " => "<< tk << endl << endl; 
+        
+            for (size_t i = 0; i < pairs.size(); ++i)
+            {
+                if (pairs[i][0]==fre[0].token1 && pairs[i][1]==fre[0].token2)
+                {
+                    erase(pairs[i], fre[0].token1);
+                    erase(pairs[i], fre[0].token2);
+                    pairs[i].insert(pairs[i].begin(), fre[0].merge);
+                    if (i==0)
+                    {
+                        erase(pairs[i], fre[0].merge);
+                        erase(pairs[i + 1], fre[0].token2);
+                        pairs[i + 1].insert(pairs[i + 1].begin(), fre[0].merge);
+                    }
+                    else if(i == (pairs.size() - 1))
+                    {
+                        erase(pairs[i], fre[0].merge);
+                        erase(pairs[i - 1], fre[0].token1);
+                        pairs[i - 1].insert(pairs[i - 1].begin(), fre[0].merge);                
+                    }
+                    else
+                    {
+                        erase(pairs[i], fre[0].merge);
+                        erase(pairs[i - 1], fre[0].token1);
+                        erase(pairs[i + 1], fre[0].token2);
+                        pairs[i - 1].insert(pairs[i - 1].end(), fre[0].merge);
+                        pairs[i + 1].insert(pairs[i + 1].begin(), fre[0].merge);
+                    }
+                }
+            }
+            
+            remove_empty(pairs);
+        
+            ifstream vocab("vocab.json");
+            if (!vocab.is_open()) cout << "vocab.json Can Not Open " << endl;
             else
-            {        
-                merges_file << tk1 << " " << tk2 << endl;            
-                merges_file.close();
-            }    
+            {   
+                ordered_json data;
+                vocab >> data;
+                vocab.close();
+                
+                if (!data.contains(tk))
+                {
+                    long long max_id = -1;
+                    for (auto& [k, v] : data.items()) max_id = std::max(max_id, v.get<long long>());
+                    data[tk] = max_id + 1;
+                    
+                    most[fre[0].merge] = tk;
+        
+                    std::ofstream out("vocab.json");
+                    out << data.dump(4);
+                    out.close();
+        
+                    ofstream merges_file("merges.txt", std::ios::app);
+            
+                    if(!merges_file.is_open()) cout << "Can not open or create merges.txt " << endl;
+                    else
+                    {        
+                        merges_file << tk1 << " " << tk2 << endl;            
+                        merges_file.close();
+                    }    
+                }
+            }
         }
     }
 }
