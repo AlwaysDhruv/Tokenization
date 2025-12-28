@@ -38,7 +38,11 @@ int main()
     vector<vector<long long>> pair;
     tokens_to_pairs(tokens, pair);
 
-    pairs_to_most_frequent_merge(pair, vocab);
+    cout << endl << endl;
+    
+    display(pair);
+    
+    //pairs_to_most_frequent_merge(pair, vocab);
 
     return 0;
 }
@@ -58,21 +62,18 @@ template <typename vectr> void display(vector<vector<vectr>>& vec)
 }
 
 
-std::string byte_to_key(unsigned char b)
+string byte_to_key(unsigned char b)
 {
-    // ASCII printable and safe
     if (b >= 32 && b <= 126 && b != '"' && b != '\\')
     {
         return std::string(1, static_cast<char>(b));
     }
 
-    // Encode byte as UTF-8
     if (b < 128)
     {
         return std::string(1, static_cast<char>(b));
     }
 
-    // U+0080 to U+00FF → 2-byte UTF-8
     char first  = static_cast<char>(0xC0 | (b >> 6));
     char second = static_cast<char>(0x80 | (b & 0x3F));
 
@@ -105,10 +106,7 @@ void fetch_json_data(unordered_map<string, long long>& vcb)
 
         file.close();
 
-        for(auto& [key, values] : data.items())
-        {
-            vcb[key] = values.get<long long>();
-        }
+        for(auto& [key, values] : data.items()) vcb[key] = values.get<long long>();
 
         cout << "Data Fetched Sucessfully.." << endl;
 
@@ -119,10 +117,7 @@ void fetch_json_data(unordered_map<string, long long>& vcb)
         ordered_json data;
         file >> data;
         file.close();
-        for(auto& [key, values] : data.items())
-        {
-            vcb[key] = values.get<long long>();
-        }
+        for(auto& [key, values] : data.items()) vcb[key] = values.get<long long>();
 
         cout << "Data Fetched Sucessfully.." << endl;
     }
@@ -155,6 +150,9 @@ int tokens_to_pairs(vector<long long>& tokens ,vector<vector<long long>>& pairs)
     vector<long long> pair;
     for (int i = 0; i < tokens.size(); ++i)
     {
+        if (i!=(tokens.size() - 1))
+        {
+            
         if (ct==2)
         {
             pairs.push_back(pair);
@@ -166,6 +164,16 @@ int tokens_to_pairs(vector<long long>& tokens ,vector<vector<long long>>& pairs)
         {
             pair.push_back(tokens[i]);
             ++ct;
+        }
+        }
+        else
+        {
+            pairs.push_back(pair);
+            pair.clear();
+            pair.push_back(tokens[i - 1]);
+            pair.push_back(tokens[i]);
+            pairs.push_back(pair);
+            pair.clear();
         }
     }
     cout << pairs.size() << " Pairs Created Sucessfully..." << endl;
