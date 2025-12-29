@@ -20,7 +20,7 @@ void fetch_json_data(unordered_map<string, long long>&);
 template <typename vectr> void display(vector<vector<vectr>>&);
 template <typename empty> void remove_empty(vector<vector<empty>>&);
 int fetch_text_data_to_tokens(unordered_map<string, long long>&, vector<long long>&, string);
-void pairs_to_most_frequent_merge(vector<vector<long long>>&, unordered_map<string, long long>&);
+void pairs_to_most_frequent_merge(vector<vector<long long>>&, unordered_map<string, long long>&, int);
 
 struct Frequency
 {
@@ -38,7 +38,7 @@ int main()
     vector<vector<long long>> pair;
     tokens_to_pairs(tokens, pair);
     
-    pairs_to_most_frequent_merge(pair, vocab);
+    pairs_to_most_frequent_merge(pair, vocab, 2);
 
     return 0;
 }
@@ -204,13 +204,10 @@ string token_to_char(unordered_map<string, long long>& vcb, long long tk)
     return ch;
 }
 
-void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_map<string, long long>& vcb)
+void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_map<string, long long>& vcb, int n)
 {
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < n; ++i)
     {
-        display(pairs);
-        cout << endl << endl;
-
         if (pairs.size() > 1)
         {
             bool isthat[pairs.size()] = {false};
