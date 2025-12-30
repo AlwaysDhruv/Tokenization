@@ -208,8 +208,6 @@ void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_ma
 {
     for (int i = 0; i < n; ++i)
     {
-        if (pairs.size() > 1)
-        {
             bool isthat[pairs.size()] = {false};
             
             vector<Frequency> fre;    
@@ -282,7 +280,8 @@ void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_ma
                     if (i==0)
                     {
                         erase(pairs[i], fre[0].merge);
-                        erase(pairs[i + 1], fre[0].token2);
+                        auto it = find(pairs[i + 1].begin(), pairs[i + 1].end(), fre[0].token2);
+                        if (it != pairs[i + 1].end()) pairs[i + 1].erase(it);
                         pairs[i + 1].insert(pairs[i + 1].begin(), fre[0].merge);
                     }
                     else if(i == (pairs.size() - 1))
@@ -301,7 +300,6 @@ void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_ma
                     }
                 }
             }
-            remove_empty(pairs);        
-        }
+            remove_empty(pairs);
     }
 }
