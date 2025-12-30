@@ -14,10 +14,10 @@ using ordered_json = nlohmann::ordered_json;
 static unordered_map<string, long long> most;
 
 string byte_to_key(unsigned char);
-string token_to_char(unordered_map<string, long long>&, long long);
-int tokens_to_pairs(vector<long long>&,vector<vector<long long>>&);
 void fetch_json_data(unordered_map<string, long long>&);
 template <typename vectr> void display(vector<vector<vectr>>&);
+string token_to_char(unordered_map<string, long long>&, long long);
+int tokens_to_pairs(vector<long long>&,vector<vector<long long>>&);
 template <typename empty> void remove_empty(vector<vector<empty>>&);
 int fetch_text_data_to_tokens(unordered_map<string, long long>&, vector<long long>&, string);
 void pairs_to_most_frequent_merge(vector<vector<long long>>&, unordered_map<string, long long>&, int);
