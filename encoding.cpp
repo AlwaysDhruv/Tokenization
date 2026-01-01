@@ -227,101 +227,101 @@ void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_ma
 {
     for (int i = 0; i < n; ++i)
     {
-            bool isthat[pairs.size()] = {false};
-            
-            vector<Frequency> fre;    
+        bool isthat[pairs.size()] = {false};
         
+        vector<Frequency> fre;    
+    
+        for (size_t i = 0; i < pairs.size(); ++i)
+        {
+            if (isthat[i]) continue;
+            long long ct = 1;
+            for (size_t j = i + 1; j < pairs.size(); ++j)
+            {
+                if (pairs[i][0]==pairs[j][0] && pairs[i][1]==pairs[j][1])
+                {
+                    isthat[j] = true;
+                    ++ct;
+                }
+            }
+            fre.push_back({pairs[i][0], pairs[i][1], ct});
+        }
+    
+        for (size_t i = 0; i < fre.size() - 1; ++i)
+            for (size_t j = 0; j < fre.size() - i - 1; ++j)
+                if (fre[j].ct < fre[j + 1].ct) swap(fre[j], fre[j + 1]);
+                           
+        string tk1 = token_to_char(vcb, fre[0].token1);
+        string tk2 = token_to_char(vcb, fre[0].token2);
+        string tk = tk1 + tk2;
+        ifstream vocab("vocab.json");
+        if (!vocab.is_open()) cout << "vocab.json Can Not Open " << endl;
+        else
+        {   
+            ordered_json data;
+            vocab >> data;
+            vocab.close();
+            
+            if (!data.contains(tk))
+            {
+                long long max_id = -1;
+                for (auto& [k, v] : data.items()) max_id = std::max(max_id, v.get<long long>());
+                data[tk] = max_id + 1;
+    
+                most[tk] = max_id + 1;
+        
+                fre[0].merge = max_id + 1;
+    
+                std::ofstream out("vocab.json");
+                out << data.dump(4);
+                out.close();
+    
+                ofstream merges_file("merges.txt", std::ios::app);
+        
+                if(!merges_file.is_open()) cout << "Can not open or create merges.txt " << endl;
+                else
+                {        
+                    merges_file << tk1 << " " << tk2 << endl;            
+                    merges_file.close();
+                }    
+            }
+        }
+    
+        cout << "Most Frequent : "<< tk1 << " & " << tk2 << " => "<< tk << endl << endl; 
+    
+        if (pairs.size() != 1)
+        {
             for (size_t i = 0; i < pairs.size(); ++i)
             {
-                if (isthat[i]) continue;
-                long long ct = 1;
-                for (size_t j = i + 1; j < pairs.size(); ++j)
+                if (pairs[i][0]==fre[0].token1 && pairs[i][1]==fre[0].token2)
                 {
-                    if (pairs[i][0]==pairs[j][0] && pairs[i][1]==pairs[j][1])
+                    erase(pairs[i], fre[0].token1);
+                    erase(pairs[i], fre[0].token2);
+                    pairs[i].insert(pairs[i].begin(), fre[0].merge);
+                    if (i==0)
                     {
-                        isthat[j] = true;
-                        ++ct;
+                        erase(pairs[i], fre[0].merge);
+                        auto it = find(pairs[i + 1].begin(), pairs[i + 1].end(), fre[0].token2);
+                        if (it != pairs[i + 1].end()) pairs[i + 1].erase(it);
+                        pairs[i + 1].insert(pairs[i + 1].begin(), fre[0].merge);
                     }
-                }
-                fre.push_back({pairs[i][0], pairs[i][1], ct});
-            }
-        
-            for (size_t i = 0; i < fre.size() - 1; ++i)
-                for (size_t j = 0; j < fre.size() - i - 1; ++j)
-                    if (fre[j].ct < fre[j + 1].ct) swap(fre[j], fre[j + 1]);
-                               
-            string tk1 = token_to_char(vcb, fre[0].token1);
-            string tk2 = token_to_char(vcb, fre[0].token2);
-            string tk = tk1 + tk2;
-
-            ifstream vocab("vocab.json");
-            if (!vocab.is_open()) cout << "vocab.json Can Not Open " << endl;
-            else
-            {   
-                ordered_json data;
-                vocab >> data;
-                vocab.close();
-                
-                if (!data.contains(tk))
-                {
-                    long long max_id = -1;
-                    for (auto& [k, v] : data.items()) max_id = std::max(max_id, v.get<long long>());
-                    data[tk] = max_id + 1;
-        
-                    most[tk] = max_id + 1;
-            
-                    fre[0].merge = max_id + 1;
-        
-                    std::ofstream out("vocab.json");
-                    out << data.dump(4);
-                    out.close();
-        
-                    ofstream merges_file("merges.txt", std::ios::app);
-            
-                    if(!merges_file.is_open()) cout << "Can not open or create merges.txt " << endl;
+                    else if(i == (pairs.size() - 1))
+                    {
+                        erase(pairs[i], fre[0].merge);
+                        erase(pairs[i - 1], fre[0].token1);
+                        pairs[i - 1].insert(pairs[i - 1].begin(), fre[0].merge);
+                    }
                     else
-                    {        
-                        merges_file << tk1 << " " << tk2 << endl;            
-                        merges_file.close();
-                    }    
-                }
-            }
-        
-            cout << "Most Frequent : "<< tk1 << " & " << tk2 << " => "<< tk << endl << endl; 
-        
-            if (pairs.size() != 1)
-            {
-                for (size_t i = 0; i < pairs.size(); ++i)
-                {
-                    if (pairs[i][0]==fre[0].token1 && pairs[i][1]==fre[0].token2)
                     {
-                        erase(pairs[i], fre[0].token1);
-                        erase(pairs[i], fre[0].token2);
-                        pairs[i].insert(pairs[i].begin(), fre[0].merge);
-                        if (i==0)
-                        {
-                            erase(pairs[i], fre[0].merge);
-                            auto it = find(pairs[i + 1].begin(), pairs[i + 1].end(), fre[0].token2);
-                            if (it != pairs[i + 1].end()) pairs[i + 1].erase(it);
-                            pairs[i + 1].insert(pairs[i + 1].begin(), fre[0].merge);
-                        }
-                        else if(i == (pairs.size() - 1))
-                        {
-                            erase(pairs[i], fre[0].merge);
-                            erase(pairs[i - 1], fre[0].token1);
-                            pairs[i - 1].insert(pairs[i - 1].begin(), fre[0].merge);
-                        }
-                        else
-                        {
-                            erase(pairs[i], fre[0].merge);
-                            erase(pairs[i - 1], fre[0].token1);
-                            erase(pairs[i + 1], fre[0].token2);
-                            pairs[i - 1].insert(pairs[i - 1].end(), fre[0].merge);
-                            pairs[i + 1].insert(pairs[i + 1].begin(), fre[0].merge);
-                        }
+                        erase(pairs[i], fre[0].merge);
+                        erase(pairs[i - 1], fre[0].token1);
+                        erase(pairs[i + 1], fre[0].token2);
+                        pairs[i - 1].insert(pairs[i - 1].end(), fre[0].merge);
+                        pairs[i + 1].insert(pairs[i + 1].begin(), fre[0].merge);
                     }
                 }
-                remove_empty(pairs);
             }
+            remove_empty(pairs);
+        }
+        else break;
     }
 }
