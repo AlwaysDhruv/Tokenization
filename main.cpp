@@ -18,8 +18,8 @@ void preprocess_to_pairs(vector<vector<long long>>&);
 void fetch_json_data(unordered_map<string, long long>&);
 template <typename vectr> void display(vector<vector<vectr>>&);
 string token_to_char(unordered_map<string, long long>&, long long);
-int tokens_to_pairs(vector<long long>&,vector<vector<long long>>&);
 template <typename empty> void remove_empty(vector<vector<empty>>&);
+template <typename pairing> int tokens_to_pairs(vector<pairing>& ,vector<vector<pairing>>&);
 int fetch_text_data_to_tokens(unordered_map<string, long long>&, vector<long long>&, string);
 void pairs_to_most_frequent_merge(vector<vector<long long>>&, unordered_map<string, long long>&, int);
 
@@ -30,17 +30,52 @@ struct Frequency
 
 int main()
 {
-    unordered_map<string , long long> vocab;
-    fetch_json_data(vocab);
+    // unordered_map<string , long long> vocab;
+    // fetch_json_data(vocab);
 
-    vector<long long> tokens;
-    fetch_text_data_to_tokens(vocab, tokens, "test2.txt");
+    // vector<long long> tokens;
+    // fetch_text_data_to_tokens(vocab, tokens, "test2.txt");
 
-    vector<vector<long long>> pair;
-    tokens_to_pairs(tokens, pair);
+    // vector<vector<long long>> pair;
+    // tokens_to_pairs(tokens, pair);
 
-    pairs_to_most_frequent_merge(pair, vocab, 3);
+    // pairs_to_most_frequent_merge(pair, vocab, 5);
+
+    ifstream file("test2.txt");
+
+    string line;
+    vector<string> chars;
+
+    while(getline(file, line))
+    {
+        for (int i = 0; i < line.size(); ++i) chars.push_back(string(1, line[i]));
+        line.clear();
+    }
+
+    vector<vector<string>> pair;
+    tokens_to_pairs(chars, pair);
+
+    line.clear();
     
+    vector<vector<string>> merges;
+    ifstream merge("merges.txt");
+
+    while(getline(merge, line))
+    {
+        vector<string> cha;
+        for (size_t i = 0; i < pair.size(); ++i)
+            if (string(1, line[0])==pair[i][0])
+            {
+                for (size_t j = 0; j < line.size(); ++j)
+                    if (line[j]!=' ')
+                        cha.push_back(line[j]);
+                break;
+            }
+        merges.push_back(cha);
+    }
+
+    display(merges);
+
     return 0;
 }
 
@@ -180,10 +215,10 @@ int fetch_text_data_to_tokens(unordered_map<string, long long>& vcb, vector<long
     return tk.size();
 }
 
-int tokens_to_pairs(vector<long long>& tokens ,vector<vector<long long>>& pairs)
+template <typename pairing> int tokens_to_pairs(vector<pairing>& tokens ,vector<vector<pairing>>& pairs)
 {
     int ct = 0;
-    vector<long long> pair;
+    vector<pairing> pair;
     for (int i = 0; i < tokens.size(); ++i)
     {
         if (i!=(tokens.size() - 1))
