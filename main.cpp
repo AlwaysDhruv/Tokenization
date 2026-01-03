@@ -39,8 +39,8 @@ int main()
     vector<vector<long long>> pair;
     tokens_to_pairs(tokens, pair);
 
-    pairs_to_most_frequent_merge(pair, vocab, 10000);
-
+    pairs_to_most_frequent_merge(pair, vocab, 3);
+    
     return 0;
 }
 
@@ -308,7 +308,9 @@ void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_ma
                 if (!data.contains(tk))
                 {
                     long long max_id = -1;
+
                     for (auto& [k, v] : data.items()) max_id = max(max_id, v.get<long long>());
+                    
                     data[tk] = max_id + 1;
         
                     most[tk] = max_id + 1;
@@ -330,7 +332,7 @@ void pairs_to_most_frequent_merge(vector<vector<long long>>& pairs, unordered_ma
                 }
             }
         
-            cout << i + 1 << " Most Frequent : "<< tk1 << " : " << fre[0].token1 << " & " << tk2 << " : " << fre[0].token2 << " => "<< tk << endl << endl; 
+            cout << i + 1 << ". " << tk1 << " : " << fre[0].token1 << " & " << tk2 << " : " << fre[0].token2 << " => "<< tk << " : " << fre[0].merge << endl << endl; 
             
             if (pairs.size() != 1)
             {
