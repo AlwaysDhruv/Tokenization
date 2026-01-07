@@ -24,9 +24,10 @@ struct Frequency
 class Encoding
 {
 private:
-
+	string path = "../model/merges.txt";
+	string vocablury = "../model/vocab.json";
 	vector<long long> tokens;
-    vector<vector<string>> pairs;
+    vector<string> input_pair;
     vector<vector<string>> merges;
 	vector<vector<long long>> pair;
 	unordered_map<string , long long> vocab;
@@ -58,6 +59,14 @@ public:
 	    }
 	}
 	
+	template <typename vectr> void display(vector<vectr>& vec)
+	{
+	    for (auto& values : vec)
+	    {
+	        cout << values << " ";
+	    }
+        cout << endl;
+	}
 	
 	string byte_to_key(unsigned char b)
 	{
@@ -73,7 +82,9 @@ public:
 	
 	void fetch_json_data(unordered_map<string, long long>& vcb)
 	{
-	    string vocablury = "vocab.json";
+        fs::path dir_path = "../model";
+        
+        fs::create_directories(dir_path);
 	
 	    if (!fs::exists(vocablury))
 	    {
@@ -283,9 +294,8 @@ public:
 	            string tk1 = token_to_char(vcb, fre[0].token1);
 	            string tk2 = token_to_char(vcb, fre[0].token2);
 	            string tk = tk1 + tk2;
-	            string file = "vocab.json";
 	            
-	            ifstream vocab(file);
+	            ifstream vocab(vocablury);
 	            
 	            if (!vocab.is_open()) cout << "vocab.json Can Not Open " << endl;
 	            else
@@ -306,11 +316,11 @@ public:
 	            
 	                    fre[0].merge = max_id + 1;
 	        
-	                    ofstream out(file);
+	                    ofstream out(vocablury);
 	                    out << data.dump(4);
 	                    out.close();
 	        
-	                    ofstream merges_file("merges.txt", ios::app);
+	                    ofstream merges_file(path, ios::app);
 	            
 	                    if(!merges_file.is_open()) cout << "Can not open or create merges.txt " << endl;
 	                    else
@@ -366,7 +376,51 @@ public:
 	        }
 	    }
 	}
-	
+
+	void fetch_data(string path)
+	{
+	   	string line;
+    	ifstream file(path);
+
+    	while(getline(file, line))
+    	{
+    	    for (int i = 0; i < line.size(); ++i) input_pair.push_back(string(1, line[i]));
+    	    line.clear();
+    	}
+	}
+
+	void fetch_data()
+	{
+		string line;
+		vector<string> chars;
+
+    	ifstream merge(path);
+
+    	while(getline(merge, line))
+    	{
+    	    for (size_t i = 0; i < input_pair.size(); ++i)
+    	        if (string(1, line[0])==input_pair[i])
+    	        {
+    	            string me = "";
+    	            for (size_t j = 0; j < line.size(); ++j)
+    	            {
+    	                if (line[j]==' ')
+    	                {
+    	                    chars.push_back(me);
+    	                    me.clear();
+    	                    continue;
+    	                }
+    	                else me += line[j];
+    	            }
+    	            chars.push_back(me);
+    	            me.clear();
+    	            break;
+    	        }
+    	    merges.push_back(chars);
+    	    chars.clear();
+    	}    	
+	}
+
 	void encoding(string path, long long train)
 	{
 	    fetch_json_data(vocab);
@@ -374,8 +428,12 @@ public:
 	    fetch_text_data_to_tokens(vocab, tokens, path);
 	
 	    tokens_to_pairs(tokens, pair);
-	
+
 	    pairs_to_most_frequent_merge(pair, vocab, train);
+
+		fetch_data(path);
+
+		fetch_data();
 	}
 };
 #endif
