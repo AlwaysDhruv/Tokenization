@@ -5,7 +5,7 @@ using namespace std;
 int main()
 {
     Encoding en;
-    en.encoding("test2.txt", 200);
+    en.encoding("../data/test2.txt", 200);
     return 0;
 }
 
