@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Encoding.hpp"
+#include "./include/Encoding.hpp"
 using namespace std;
 
 int main()
@@ -9,8 +9,7 @@ int main()
     vector<long long> tk;
     vector<string> pair;
     
-    en.fit("../data/test.txt", 5);
+    //en.fit("../data/test.txt", 5);
     en.encoding("../data/test2.txt", pair, tk);
-    
     return 0;
 }
