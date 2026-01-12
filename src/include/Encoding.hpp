@@ -272,7 +272,10 @@ public:
     		    line.clear();
     		}
 			
-    		line.clear();
+			//for (int i = 0; i < input_pair.size(); ++i) cout << input_pair[i] << " ";
+			//cout << endl;
+
+			line.clear();
     		vector<string> chars;
 	
     		ifstream merge(path);
@@ -282,45 +285,46 @@ public:
     			while(getline(merge, line))
     			{
     			    for (size_t i = 0; i < input_pair.size(); ++i)
-    			        if (string(1, line[0])==input_pair[i])
-    			        {
-    			            string me = "";
-    			            for (size_t j = 0; j < line.size(); ++j)
-    			            {
-    			                if (line[j]==' ')
-    			                {
-    			                    chars.push_back(me);
-    			                    me.clear();
-    			                    continue;
-    			                }
-    			                else me += line[j];
-    			            }
-    			            chars.push_back(me);
-    			            me.clear();
-    			            break;
-    			        }
+    			    {
+    			    	string me = "";
+   			            for (size_t j = 0; j < line.size(); ++j)
+   			            {
+   			                if (line[j]==' ')
+   			                {
+   			                    chars.push_back(me);
+   			                    me.clear();
+   			                    continue;
+   			                }
+   			                else me += line[j];
+   			            }
+   			            chars.push_back(me);
+   			            me.clear();
+   			            break;
+    			    }
     			    merges.push_back(chars);
     			    chars.clear();
     			}
-
-    			if (merges.size() > 0) break;
 				
-				for (size_t i = 0; i < merges.size(); ++i)
+				if (merges.size() > 0)
 				{
-					int fg = 0;
-					for (size_t j = 0; j < input_pair.size() - 1; ++j)
+					for (size_t i = 0; i < merges.size(); ++i)
 					{
-						if (merges[i][0]==input_pair[j] && merges[i][1]==input_pair[j + 1])
+						int fg = 0;
+						for (size_t j = 0; j < input_pair.size() - 1; ++j)
 						{
-							input_pair[j] = input_pair[j] + input_pair[j + 1];
-							input_pair.erase(input_pair.begin() + j + 1);
-							fg = 1;
+							if (merges[i][0]==input_pair[j] && merges[i][1]==input_pair[j + 1])
+							{
+								input_pair[j] = input_pair[j] + input_pair[j + 1];
+								input_pair.erase(input_pair.begin() + j + 1);
+								fg = 1;
+							}
 						}
+						if(fg==1) i = 0;
 					}
-					if(fg==1) i = 0;
+					break;
 				}
+				else break;
     		}
-			
 			ifstream f(vocablury);
 	
 			json data = json::parse(f);
