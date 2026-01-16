@@ -4,18 +4,18 @@ using namespace std;
 
 int main()
 {
-    Encoding en; //Class Object
+    Tokenize tk; //Class Object
     
-    vector<long long> tk;
+    vector<long long> token;
     vector<string> pair;
     
-    en.fit("../data/test.txt", 100); //Training
-    en.encoding("../data/test2.txt", pair, tk); // Testing with much of tokens
+    tk.fit("../data/test.txt", 100); //Training
+    tk.encoding("../data/test2.txt", pair, token); // Testing with much of tokens
 
-    for (int i = 0; i < pair.size(); ++i) cout << tk[i] << " ";
+    for (int i = 0; i < pair.size(); ++i) cout << token[i] << " ";
     cout << endl << endl;
     
-    cout << en.decoding(355) << endl; //Decoding
+    cout << tk.decoding(355) << endl; //Decoding
     
     return 0;
 }
