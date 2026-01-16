@@ -43,27 +43,25 @@ using namespace std;
 
 int main()
 {
-    Encoding en;
+    Tokenize tk;
     
     vector<long long> tokens_ids;
     vector<string> pairs;
     
     // 1. Train the model (Fit)
     // Arguments: Path to training data, Number of merges to perform
-    en.fit("../data/test.txt", 100); 
+    tk.fit("../data/test.txt", 100); 
 
     // 2. Encode text
     // Arguments: Path to text file, Output vector for string tokens, Output vector for token IDs
-    en.encoding("../data/test2.txt", pairs, tokens_ids); 
+    tk.encoding("../data/test2.txt", pairs, tokens_ids); 
 
     // Print encoded token IDs
-    for (int i = 0; i < pairs.size(); ++i) {
-        cout << tokens_ids[i] << " ";
-    }
+    for (size_t i = 0; i < pairs.size(); ++i) cout << tokens_ids[i] << " ";
     cout << endl;
     
     // 3. Decode a token ID
-    cout << en.decoding(355) << endl; 
+    cout << tk.decoding(355) << endl; 
     
     return 0;
 }
