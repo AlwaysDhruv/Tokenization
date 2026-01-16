@@ -57,6 +57,7 @@ class Encoding
 		string decoding(long long tk)
 		{
 			string token;	
+			bool flage = false;		
 			
 			vocab.clear();
 			fetch_json_data(vocab);
@@ -66,9 +67,12 @@ class Encoding
 				if (pair.second==tk)
 				{
 					token = pair.first;
+					flage = true;
 					break;
 				}
 			}
+			
+			if (flage==false) throw runtime_error("Token id not found");
 			
 			return token;
 		}
