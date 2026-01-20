@@ -45,23 +45,27 @@ int main()
 {
     Tokenize tk;
     
-    vector<long long> tokens_ids;
-    vector<string> pairs;
+    //Encoding
     
-    // 1. Train the model (Fit)
-    // Arguments: Path to training data, Number of merges to perform
-    tk.fit("../data/test.txt", 100); 
-
-    // 2. Encode text
-    // Arguments: Path to text file, Output vector for string tokens, Output vector for token IDs
-    tk.encoding("../data/test2.txt", pairs, tokens_ids); 
-
-    // Print encoded token IDs
-    for (size_t i = 0; i < pairs.size(); ++i) cout << tokens_ids[i] << " ";
-    cout << endl;
+    vector<long long> token;
+    vector<string> pair;
     
-    // 3. Decode a token ID
-    cout << tk.decoding(355) << endl; 
+    tk.fit("../data/test.txt", 100);
+    tk.encoding("../data/test2.txt", pair, token);
+
+    for (int i = 0; i < pair.size(); ++i) cout << token[i] << " ";
+    cout << endl << endl;
+    
+    //Decoding
+    
+    cout << tk.decoding(355) << endl << endl;
+    
+    pair.clear();
+
+    tk.decoding(token, pair);
+
+    for (int i = 0; i < pair.size(); ++i) cout << pair[i] << " ";
+    cout << endl << endl;
     
     return 0;
 }
