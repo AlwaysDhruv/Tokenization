@@ -12,13 +12,13 @@ int main()
     vector<long long> token;
     vector<string> pair;
     
-    tk.fit("../data/test.txt", 100);
+    tk.fit("../data/test.txt", 500);
     tk.encoding("../data/test2.txt", pair, token);
 
     for (int i = 0; i < pair.size(); ++i) cout << token[i] << " ";
     cout << endl << endl;
     
-    //Decoding
+//     //Decoding
     
     cout << tk.decoding(355) << endl << endl;
     

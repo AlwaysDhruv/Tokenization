@@ -312,7 +312,7 @@ class Tokenize
 	    		    	else input_pair.push_back(string(1, line[i]));
 	    		    line.clear();
 	    		}
-				
+
 				line.clear();
 	    		vector<string> chars;
 		
