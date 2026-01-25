@@ -7,21 +7,19 @@ int main()
 {
     Tokenization tk;
     
-    //Encoding
+    // //Encoding
     
     vector<long long> token;
     vector<string> pair;
     
-    tk.fit("../data/test.txt", 500);
+    // tk.fit("../data/test.txt", 270);
     tk.encoding("../data/test2.txt", pair, token);
 
     for (int i = 0; i < pair.size(); ++i) cout << token[i] << " ";
     cout << endl << endl;
     
-//     //Decoding
-    
-    cout << tk.decoding(355) << endl << endl;
-    
+    //Decoding
+        
     pair.clear();
 
     tk.decoding(token, pair);

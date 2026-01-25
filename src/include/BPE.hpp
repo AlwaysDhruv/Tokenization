@@ -413,7 +413,6 @@ class Tokenization
 		                for (size_t j = 0; j < fre.size() - i - 1; ++j)
 		                    if (fre[j].ct < fre[j + 1].ct) swap(fre[j], fre[j + 1]);
 		                               
-		            	            
 		            ifstream vocab(vocablury);
 		            
 		            if (!vocab.is_open()) cout << "vocab.json Can Not Open " << endl;
