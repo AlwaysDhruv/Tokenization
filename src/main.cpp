@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    Tokenize tk;
+    Tokenization tk;
     
     //Encoding
     

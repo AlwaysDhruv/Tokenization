@@ -20,7 +20,7 @@ struct Frequency
     long long token1, token2, ct, merge;
 };
 
-class Tokenize
+class Tokenization
 {
 	private:
 		
